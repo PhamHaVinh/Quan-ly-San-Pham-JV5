@@ -1,0 +1,82 @@
+package com.example.helloworldsd18403.controller;
+
+import com.example.helloworldsd18403.entity.NhanVien;
+import com.example.helloworldsd18403.repository.NhanVienRepository;
+import com.example.helloworldsd18403.repository.SanPhamRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@Controller
+@RequestMapping("/nhanvien")
+public class NhanVienController {
+    @Autowired
+    SanPhamRepository sanPhamRepository;
+
+    @Autowired
+    NhanVienRepository nhanVienRepository;
+
+    @GetMapping("/hienthi")
+    public String hienThi(Model model){
+        model.addAttribute("danhsach", nhanVienRepository.findAll());
+        return "nhanvien/hienthi";
+    }
+
+    @PostMapping("/them")
+    public String them(NhanVien nhanVien) {
+        nhanVienRepository.save(nhanVien);
+        return "redirect:/nhanvien/hienthi";
+    }
+
+    @GetMapping("/sua/{id}")
+    public String hienThiSua(@PathVariable("id") Integer id, Model model) {
+        Optional<NhanVien> nhanVienOptional = nhanVienRepository.findById(id);
+        if (nhanVienOptional.isPresent()) {
+            model.addAttribute("nhanVien", nhanVienOptional.get());
+        } else {
+            model.addAttribute("error", "Hóa đơn không tồn tại");
+            return "error-page";
+        }
+        return "nhanvien/sua";
+    }
+
+    @PostMapping("/sua")
+    public String sua(NhanVien nhanVien) {
+        nhanVienRepository.save(nhanVien);
+        return "redirect:/nhanvien/hienthi";
+    }
+
+    @GetMapping("/xoa")
+    public String xoa(@RequestParam("id") Integer id) {
+        nhanVienRepository.deleteById(id);
+        return "redirect:/nhanvien/hienthi";
+    }
+
+    @GetMapping("/chitiet/{id}")
+    public String chiTiet(@PathVariable("id") Integer id, Model model) {
+        Optional<NhanVien> nhanVienOptional = nhanVienRepository.findById(id);
+        if (nhanVienOptional.isPresent()) {
+            model.addAttribute("nhanVien", nhanVienOptional.get());
+        } else {
+            // Nếu hóa đơn không tồn tại, bạn có thể xử lý thông báo lỗi hoặc chuyển hướng
+            model.addAttribute("error", "Hóa đơn không tồn tại");
+            return "error-page"; // Tên trang lỗi
+        }
+        return "nhanvien/chitiet";
+    }
+
+    @GetMapping("/search")
+    public String timKiem(Model model, @RequestParam("id") Integer id) {
+        Optional<NhanVien> nhanVienOptional = nhanVienRepository.findById(id);
+        if (nhanVienOptional.isPresent()) {
+            model.addAttribute("nhanVien", nhanVienOptional.get());
+        } else {
+            model.addAttribute("error", "Hóa đơn không tồn tại");
+            return "error-page"; // Tên trang lỗi nếu không tìm thấy hóa đơn
+        }
+        return "nhanvien/chitiet"; // Sử dụng đúng trang hiển thị chi tiết hóa đơn
+    }
+}
