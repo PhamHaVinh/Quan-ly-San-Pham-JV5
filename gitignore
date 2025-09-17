@@ -1,0 +1,29 @@
+# IntelliJ
+/.idea
+*.iml
+
+# Build output
+/out/
+/target/
+/build/
+
+# Java class files
+*.class
+
+# Maven
+dependency-reduced-pom.xml
+release.properties
+
+# Gradle
+.gradle
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# VSCode
+.vscode/
